@@ -42,8 +42,15 @@ T = int(input())
 for test_case in range(1, T + 1):
     N = int(input())
     print(f"#{test_case}")
+    
+    # 첫 번째 줄
+    triangle = [[1]]
     print("1")
+    
+    # 두 번째 줄 이후
     for i in range(1, N):
-        print("1", end = " ")
-        for j in range(i - 1): print(f"{i}", end = " ")
-        print("1")
+        row = [1] * (i + 1)  # 양 끝은 항상 1
+        for j in range(1, i):
+            row[j] = triangle[i - 1][j - 1] + triangle[i - 1][j]  # 이번 행의 n번 값은 이전 행의 n-1번째, n번째 값의 합
+        triangle.append(row)
+        print(" ".join(map(str, row)))
