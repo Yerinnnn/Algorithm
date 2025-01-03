@@ -1,36 +1,36 @@
-from itertools import permutations
-
 N = int(input())
 numbers = list(map(int, input().split()))
-# 덧셈(+)의 개수, 뺄셈(-)의 개수, 곱셈(×)의 개수, 나눗셈(÷)의 개수
-count = list(map(int, input().split()))
-operators = []
-for op, cnt in zip(['+', '-', '*', '/'], count):
-    operators.extend([op] * cnt)
+# +, -, *, / 연산자 개수
+operators = list(map(int, input().split()))
 
 max_result = float('-inf')
 min_result = float('inf')
 
-def calculate(nums, ops):
-    result = nums[0]
-    for i in range(len(ops)):
-        if ops[i] == '+':
-            result += nums[i + 1]
-        elif ops[i] == '-':
-            result -= nums[i + 1]
-        elif ops[i] == '*':
-            result *= nums[i + 1]
-        else:  # 나눗셈
-            if result < 0:
-                result = -(-result // nums[i + 1])
-            else:
-                result = result // nums[i + 1]
-    return result
+def dfs(depth, result):
+    global max_result, min_result
+    
+    if depth == N:
+        max_result = max(max_result, result)
+        min_result = min(min_result, result)
+        return
+        
+    for i in range(4):
+        if operators[i] > 0:
+            operators[i] -= 1
+            if i == 0:  # 덧셈
+                dfs(depth + 1, result + numbers[depth])
+            elif i == 1:  # 뺄셈
+                dfs(depth + 1, result - numbers[depth])
+            elif i == 2:  # 곱셈
+                dfs(depth + 1, result * numbers[depth])
+            else:  # 나눗셈
+                # 음수를 양수로 나눌 때는 양수로 바꾼 뒤 몫을 취하고 그 몫을 음수로 바꿈
+                if result < 0:
+                    dfs(depth + 1, -(-result // numbers[depth]))
+                else:
+                    dfs(depth + 1, result // numbers[depth])
+            operators[i] += 1
 
-for ops in set(permutations(operators)):  # 순열을 만들고 set으로 중복 제거
-    current = calculate(numbers, ops)
-    max_result = max(max_result, current)
-    min_result = min(min_result, current)
-
+dfs(1, numbers[0])
 print(max_result)
 print(min_result)
