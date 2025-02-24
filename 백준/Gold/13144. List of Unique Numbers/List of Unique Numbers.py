@@ -1,29 +1,21 @@
-def count_distinct_subarrays(n: int, arr: list) -> int:
-    left = 0  # 왼쪽 포인터
-    count = 0  # 서로 다른 부분 배열의 개수
-    freq = {}  # 숫자의 빈도를 저장할 딕셔너리
+import sys
 
-    # 오른쪽 포인터를 통해 배열을 순회
-    for right in range(n):
-        # 현재 숫자의 빈도 업데이트
-        if arr[right] in freq:
-            freq[arr[right]] += 1
-        else:
-            freq[arr[right]] = 1
+def count_unique_subarrays(N, A):
+    seen = set()  # 현재 부분 수열 내의 숫자 집합
+    count = 0     # 중복 없는 부분 수열 개수
+    R = 0         # 오른쪽 포인터
 
-        # 현재 숫자가 2회 이상 등장하는 동안 왼쪽 포인터를 이동
-        while freq[arr[right]] > 1:
-            freq[arr[left]] -= 1  # 왼쪽 숫자의 빈도 감소
-            if freq[arr[left]] == 0:  # 빈도가 0이 되면 딕셔너리에서 제거
-                del freq[arr[left]]
-            left += 1  # 왼쪽 포인터 이동
+    for L in range(N):  # L을 0부터 N-1까지 이동
+        while R < N and A[R] not in seen:
+            seen.add(A[R])  # 새로운 원소 추가
+            R += 1  # 오른쪽 확장
 
-        # 현재 부분 배열의 개수는 right - left + 1
-        count += (right - left + 1)
+        count += (R - L)  # 가능한 부분 수열 개수 추가
+        seen.remove(A[L])  # L을 이동하며 숫자 제거
 
     return count
 
-n = int(input())
-arr = list(map(int, input().split()))
-result = count_distinct_subarrays(n, arr)
-print(result)
+N = int(sys.stdin.readline().strip())
+A = list(map(int, sys.stdin.readline().split()))
+
+print(count_unique_subarrays(N, A))
