@@ -1,10 +1,11 @@
+import sys
+input = sys.stdin.readline
+
 N, M = map(int, input().split())
+a = set(input().strip() for _ in range(N))
+b = set(input().strip() for _ in range(M))
 
-no_hear = set(input() for _ in range(N))
-no_see = set(input() for _ in range(M))
-
-result = sorted(no_hear & no_see)
+result = sorted(a & b)
 
 print(len(result))
-for name in result:
-    print(name)
+print('\n'.join(result))
